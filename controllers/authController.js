@@ -4,6 +4,9 @@ const nodemailer = require("nodemailer");
 const dotenv = require('dotenv');
 dotenv.config();
 
+// Import jsonwebtoken for generating secure tokens
+const jwt = require('jsonwebtoken');
+
 //create the user
 exports.registerUser = async (req, res) => {
   const { username, email, password } = req.body;
@@ -50,10 +53,11 @@ exports.forgotPassword = async (req, res) => {
       return res.status(400).json({ message: 'User not found' });
     }
 
-    //generate the token
-    const token = bcrypt.randomBytes(20).toString('hex');
-    user.resetPasswordToken = token;
-    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour expiration
+    // Generate a random token for password reset, Token expires in 1 hour
+   const token = jwt.sign({ userId: user._id}, process.env.SECRET_KEY, { expiresIn: "1hr" })
+   user.resetPasswordToken = token;
+   user.resetPasswordExpires = Date.now() + 3600000;
+
     //save the user
     await user.save();
 
