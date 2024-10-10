@@ -3,8 +3,10 @@ const express = require('express');
 //router
 const router = express.Router();
 //contollers
-const { forgotPassword, resetPassword } = require('../controllers/authController');
+const { registerUser, forgotPassword, resetPassword } = require('../controllers/authController');
 
+//Route to request a password reset
+router.post("/registers", registerUser);
 
 //Route to request a password reset
 router.post("/forgot-password", forgotPassword);
