@@ -93,6 +93,11 @@ exports.resetPassword = async (req, res) => {
       return res.status(500).json({ message: 'Token is invalid or has expired' });
     }
 
+     // Ensure password is provided
+     if (!password) {
+      return res.status(400).json({ message: 'Password is required' });
+    }
+
     user.password = password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
