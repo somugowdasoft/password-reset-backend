@@ -64,7 +64,7 @@ exports.forgotPassword = async (req, res) => {
     // Create a password reset link using the generated token
     const restlink = `https://charming-palmier-ef396f.netlify.app/reset-password/${token}`
 
-    let  html = `
+    let html = `
     <p>Hello,</p>
     <p>Reset Your Password at the link below:</p>
     <a href="${restlink}">${restlink}</a>
@@ -101,8 +101,11 @@ exports.resetPassword = async (req, res) => {
     if (!password) {
       return res.status(400).json({ message: 'Password is required' });
     }
+    // Generate salt and hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-    user.password = password;
+    user.password = hashedPassword;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
 
