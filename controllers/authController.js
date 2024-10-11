@@ -61,14 +61,11 @@ exports.forgotPassword = async (req, res) => {
     //save the user
     await user.save();
 
-    //create mail text
-    let text = `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
-        Please click on the following link, or paste this into your browser to complete the process:\n\n
-        https://charming-palmier-ef396f.netlify.app/reset-password/${token}\n\n
-        If you did not request this, please ignore this email and your password will remain unchanged.\n`
+    // Create a password reset link using the generated token
+    const restlink = `https://charming-palmier-ef396f.netlify.app/reset-password/${token}`
 
     //send mail
-    await sendMails(user.email, "Password Reset", text);
+    await sendMails(user.email, "Password Reset", `Reset Your Password: ${restlink}`);
     res.status(200).json({ message: 'Password reset email sent' });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
@@ -93,8 +90,8 @@ exports.resetPassword = async (req, res) => {
       return res.status(500).json({ message: 'Token is invalid or has expired' });
     }
 
-     // Ensure password is provided
-     if (!password) {
+    // Ensure password is provided
+    if (!password) {
       return res.status(400).json({ message: 'Password is required' });
     }
 
