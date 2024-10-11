@@ -64,8 +64,15 @@ exports.forgotPassword = async (req, res) => {
     // Create a password reset link using the generated token
     const restlink = `https://charming-palmier-ef396f.netlify.app/reset-password/${token}`
 
+    let  html = `
+    <p>Hello,</p>
+    <p>Reset Your Password at the link below:</p>
+    <a href="${restlink}">${restlink}</a>
+    <p>Best regards,</p>
+    <p>Your Team</p>
+`
     //send mail
-    await sendMails(user.email, "Password Reset", `Reset Your Password: ${restlink}`);
+    await sendMails(user.email, "Password Reset", html);
     res.status(200).json({ message: 'Password reset email sent' });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
